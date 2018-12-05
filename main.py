@@ -1,5 +1,10 @@
 
 # -*- coding: utf-8 -*-
+'''
+Author: Liu Zheyuan
+Copyright 2018 Liu Zheyuan, github/LeoAndGit>
+
+'''
 
 import sys
 import time # 时间戳

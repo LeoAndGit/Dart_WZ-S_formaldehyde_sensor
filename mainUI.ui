@@ -17,7 +17,7 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>voltageMeter</string>
+   <string>Dart WZ-S formaldehyde sensor</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,2">
    <item>
