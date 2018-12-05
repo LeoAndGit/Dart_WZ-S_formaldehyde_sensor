@@ -9,8 +9,8 @@ Author: Liu Zheyuan
 ****
 
 - Photo1 of the sensor module  
-<img src="/image/photo1.jpg" width="200px" />
+<img src="/image/photo1.jpg" width="300px" />
 - Photo2 of the sensor module  
-<img src="/image/photo2.jpg" width="200px" />
+<img src="/image/photo2.jpg" width="300px" />
 - Screenshot1  
-<img src="/image/screenshot1.png" width="200px" />
+<img src="/image/screenshot1.png" width="600px" />
