@@ -21,38 +21,38 @@ class MyMainWindow(QtWidgets.QWidget):
         #pg.setConfigOptions(antialias=True) # 使曲线看起来更光滑，而不是锯齿状
 
         self.ui = Ui_Form()
-        self.ui.setupUi(self)     
+        self.ui.setupUi(self)
                 
         ##创建线程实例
         self.thread1 = Thread1()
 
-        self.thread1.sinOut1.connect(self.slotThread1)
-        self.thread1.sinOut2.connect(self.slotThread2)
+        self.thread1.sinOut1.connect(self.slotThread11)
+        self.thread1.sinOut2.connect(self.slotThread12)
 
     def linkSlot(self):
-        pass
+        self.thread1.link()
 
     def startSlot(self):
-        pass
+        self.data = []  # 初始化list
+        self.thread1.setAndStart("continuous")
 
     def stopSlot(self):
-        pass
+        self.thread1.setAndStart("stop")
 
-    def slotThread1(self, text): # 结果输出
+    def slotThread11(self, text): # 结果输出
         # self.ui.textEdit.setPlainText(text)
         # 格式化时间
         timeText = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         self.ui.textEdit.append(timeText + " : " + text)  # 自动添加回车
 
-    def slotThread2(self, value):  # 结果输出
+    def slotThread12(self, value):  # 结果输出
         text = '{:.3f}'.format(value)
         self.ui.lcdNumber.display(text)
-        if self.flag is "continuous" :
-            #连续进行绘图
-            self.ui.graphicsView.clear()  # 初始化图,不然似乎会发生不好的事情
-            self.data.append(value)
-            self.ui.graphicsView.plot(self.data, 
-                pen=pg.mkPen(color='#3daee9', width=4))
+        #连续进行绘图
+        self.ui.graphicsView.clear()  # 初始化图,不然似乎会发生不好的事情
+        self.data.append(value)
+        self.ui.graphicsView.plot(self.data, 
+            pen=pg.mkPen(color='#3daee9', width=4))
 
 
 class Thread1(QtCore.QThread):
@@ -62,11 +62,66 @@ class Thread1(QtCore.QThread):
     def _init_(self,parent=None):
         super(Thread1,self).__init__(parent)
 
+    def setAndStart(self, value):
+        self.flag = value
+        if value is not "stop":
+            self.start()
+
     def link(self):
-        pass
+        """来自动连接在端口上的设备，会打开第一个串口
+        注意：本方法可能无法跨平台使用，端口名相关部分未经确认
+        一旦发现设备，将保持串口打开
+        """
+        self.serial = serial.Serial(
+            port=None,
+            baudrate=9600, # 串口波特率：9600bps
+            # 莫名原因导致下述三项无法配置
+            #bytesize=EIGHTBITS, # 8 位数据位
+            #parity=PARITY_NONE, # 无校验位
+            #stopbits=STOPBITS_ONE, # 1 位停止位
+            timeout=0.2, # 读取超时0.2s
+            xonxoff=False,
+            rtscts=False,
+            write_timeout=0.5, # 写超时0.5s
+            dsrdtr=False,
+            inter_byte_timeout=None,
+            exclusive=None)
+        if self.serial.is_open is True: #检测是否已经开启
+            self.serial.close()
+        # 获取串口列表
+        self.plist = list(serial.tools.list_ports.comports())
+
+        if len(self.plist) <= 0: # 无串口
+            self.sinOut1.emit("no port")
+        else:
+            # 连接第一个串口
+            plist_0 = list(self.plist[0])
+            serialName = plist_0[0]
+            self.serial.port = serialName
+            self.serial.open()
+            # 切换到问答模式
+            self.serial.write(b'\xFF\x01\x78\x41\x00\x00\x00\x00\x46')
+            self.msleep(100)
+            self.sinOut1.emit(serialName)
+            self.serial.reset_input_buffer()
 
     def run(self):
-        pass
+        while self.flag is "continuous":
+            # 询问浓度
+            self.serial.write(b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79')
+            self.msleep(100)
+            # 读取9位的结果
+            if self.serial.inWaiting() == 9:
+                result = self.serial.read(9)
+                valueHigh = int(hex(result[6]), 16) #气体浓度高位，ppb
+                valueLow = int(hex(result[7]), 16) #气体浓度低位，ppb
+                value = valueHigh * 256 + valueLow
+                self.sinOut2.emit(float(value)/1000)
+            else:
+                self.sinOut1.emit("Read error")
+                self.serial.reset_input_buffer()
+
+            self.msleep(1000)
 
 if __name__=="__main__":  
     app = QtWidgets.QApplication(sys.argv)
