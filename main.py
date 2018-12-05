@@ -10,6 +10,9 @@ import qdarkstyle  # QSS样式表
 
 from mainUI import Ui_Form #自动生成的界面
 
+import serial
+import serial.tools.list_ports
+
 class MyMainWindow(QtWidgets.QWidget):
     def __init__(self, parent=None):    
         super(MyMainWindow, self).__init__(parent)
@@ -59,14 +62,11 @@ class Thread1(QtCore.QThread):
     def _init_(self,parent=None):
         super(Thread1,self).__init__(parent)
 
-    def setup(self,mutex,condition):
-        self.mutex = mutex
-        self.condition = condition
+    def link(self):
+        pass
 
     def run(self):
-        self.sleep(1)
-        self.condition.wakeAll()
-
+        pass
 
 if __name__=="__main__":  
     app = QtWidgets.QApplication(sys.argv)
