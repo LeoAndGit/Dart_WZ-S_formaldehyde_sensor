@@ -84,7 +84,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "voltageMeter"))
+        Form.setWindowTitle(_translate("Form", "Dart WZ-S formaldehyde sensor"))
         self.link.setText(_translate("Form", "连接"))
         self.start.setText(_translate("Form", "开始"))
         self.stop.setText(_translate("Form", "停止"))
