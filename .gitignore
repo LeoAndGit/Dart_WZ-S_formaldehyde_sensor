@@ -1,0 +1,14 @@
+*.csv
+
+/numpy/*
+/PyQt5/*
+/pyqtgraph/*
+/serial/*
+
+# Python:
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
