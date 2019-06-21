@@ -4,6 +4,7 @@ This program is for WZ-S formaldehyde sensor which uses Dart Sensors wafer compo
 
 ****
 Author: Leo
+
 main.zip is a very first relase of the programme for quick test.  
 Chart function may still have some problems.    
 
