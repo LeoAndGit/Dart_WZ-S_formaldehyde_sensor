@@ -1,9 +1,9 @@
 Dart_WZ-S_formaldehyde_sensor
 ===========================
-This programme is for WZ-S formaldehyde sensor which uses Dart Sensors wafer components. This is a module outputting a ppm formaldehyde value, thus obviating the need for customer calibration. The whole system just contians a module and a USB to TTL-UART adapter.
+This program is for WZ-S formaldehyde sensor which uses Dart Sensors wafer components. This is a module outputting a ppm formaldehyde value, thus obviating the need for customer calibration. The whole system just contians a module and a USB to TTL-UART adapter.
 
 ****
-Author: Liu Zheyuan  
+Author: Leo
 main.zip is a very first relase of the programme for quick test.  
 Chart function may still have some problems.    
 
